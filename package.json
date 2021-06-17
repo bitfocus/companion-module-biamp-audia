@@ -1,0 +1,33 @@
+{
+  "name": "biamp-audia",
+	"version": "1.0.0",
+	"api_version": "1.0.0",
+	"description": "Controls the Biamp Audia/Nexia family of products",
+	"keywords": [
+		"Biamp",
+		"Audia",
+		"Nexia"
+	],
+	"manufacturer": "Biamp",
+	"product": "Audia/Nexia",
+	"shortname": "audia",
+ 	"homepage": "https://github.com/bitfocus/companion-module-biamp-audia",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/bitfocus/companion-module-biamp-audia.git"
+	},
+	"author": "Andreas H. Thomsen <mc-hauge@hotmail.com>",
+	"contributors": [
+		"Andrew Broughton <andy@checkcheckonetwo.com>",
+		"John A Knight Jr <istnv@ayesti.com>"
+	],
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/bitfocus/companion-module-biamp-audia/issues"
+	}
+}
+
