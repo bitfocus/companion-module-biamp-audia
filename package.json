@@ -1,56 +1,25 @@
 {
-<<<<<<< HEAD
-  "name": "biamp-audia",
+	"name": "biamp-audia",
 	"version": "1.0.0",
 	"api_version": "1.0.0",
-	"description": "Controls the Biamp Audia/Nexia family of products",
-	"keywords": [
-		"Biamp",
-		"Audia",
-		"Nexia"
-	],
+	"keywords": [ "biamp", "audia", "nexia" ],
 	"manufacturer": "Biamp",
 	"product": "Audia/Nexia",
-	"shortname": "audia",
- 	"homepage": "https://github.com/bitfocus/companion-module-biamp-audia",
-=======
-	"name": "dolby-cinemaprocessor",
-	"version": "1.0.0",
-	"api_version": "1.0.0",
-	"keywords": [ "Cinema", "Processor" ],
-	"manufacturer": "Dolby",
-	"product": "Cinema Processor",
-	"shortname": "cinemaprocessor",
+	"shortname": "audianexia",
 	"description": "",
->>>>>>> da53146 (initial commit)
 	"main": "index.js",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
 	"repository": {
 		"type": "git",
-<<<<<<< HEAD
 		"url": "git+https://github.com/bitfocus/companion-module-biamp-audia.git"
 	},
-	"author": "Andreas H. Thomsen <mc-hauge@hotmail.com>",
-	"contributors": [
-		"Andrew Broughton <andy@checkcheckonetwo.com>",
-		"John A Knight Jr <istnv@ayesti.com>"
-	],
+	"author": "David Stevens <teamjtf4@gmail.com>",
+	"contributors": ["Joeaph Adams <joesphadams@gmail.com>"],
 	"license": "MIT",
 	"bugs": {
 		"url": "https://github.com/bitfocus/companion-module-biamp-audia/issues"
-	}
-}
-
-=======
-		"url": "git+https://github.com/bitfocus/companion-module-dolby-cinemaprocessor.git"
 	},
-	"author": "Joseph Adams <josephdadams@gmail.com>",
-	"license": "MIT",
-	"bugs": {
-		"url": "https://github.com/bitfocus/companion-module-dolby-cinemaprocessor/issues"
-	},
-	"homepage": "https://github.com/bitfocus/companion-module-dolby-cinemaprocessor#readme"
+	"homepage": "https://github.com/bitfocus/companion-module-biamp-audia#readme"
 }
->>>>>>> da53146 (initial commit)
