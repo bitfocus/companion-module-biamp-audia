@@ -16,7 +16,7 @@
 		"url": "git+https://github.com/bitfocus/companion-module-biamp-audia.git"
 	},
 	"author": "David Stevens <teamjtf4@gmail.com>",
-	"contributors": ["Joeaph Adams <joesphadams@gmail.com>"],
+	"contributors": ["Joseph Adams <josephdadams@gmail.com>"],
 	"license": "MIT",
 	"bugs": {
 		"url": "https://github.com/bitfocus/companion-module-biamp-audia/issues"
