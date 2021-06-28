@@ -1,28 +1,18 @@
-## Dolby Digital Cinema Processor
+## BiAmp Audia / Nexia
 
-This module will allow you to control a Dolby Digital Cinema Processor, specifically the CP650.
+This module will allow you to control the BiAmp Audia / Nexia family of devices.
 
 ### Configuration
 * Enter the IP address of the device in the configuration settings.
-* The device will use TCP port 61412.
 
 **Available actions:**
-* Increase Fader Level 1 Point and Stop
-* Increase Fader Level 1 Point Continuously
-* Stop Increasing Fader Level
-* Decrease Fader Level 1 Point and Stop
-* Decrease Fader Level 1 Point Continuously
-* Stop Decreasing Fader Level
-* Set Fader to Level (0-100)
-* Set Format Button (choice of 7 presets)
-* Mute On
-* Mute Off
-* Mute Toggle
+* Set fader to a specific level
+* Incriment fader up
+* Incriment fader down
+* Stop inceient
+* Custom command
 
-**Feedbacks & Variables:**
-* Current Fader Level
-* Current Mute Status
-* Current Format Button
+If you want a specific action to be added, please open an issue request on the module repo.
 
 **Presets:**
 * Increase Fader Level (with down action to start the action, up action to stop it)

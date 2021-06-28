@@ -1,7 +1,8 @@
-// Dolby Cinema Processor
+// BiAmp Audia
 
 var tcp = require('../../tcp');
 var instance_skel = require('../../instance_skel');
+const { slice } = require('lodash');
 var debug;
 var log;
 
@@ -16,29 +17,23 @@ function instance(system, id, config) {
 	return self;
 }
 
-instance.prototype.CHOICES_FORMATS = [
-	{ id: '0', label: 'Format 01' },
-	{ id: '1', label: 'Format 04' },
-	{ id: '2', label: 'Format 05' },
-	{ id: '3', label: 'Format 10' },
-	{ id: '4', label: 'Format 11' },
-	{ id: '5', label: 'User format 1' },
-	{ id: '6', label: 'User format 2' },
-	{ id: '7', label: 'Nonsync format' }
-];
+//instance.prototype.DATA_BUFFER = null;
 
-instance.prototype.FADER_LEVEL = 85;
-
-instance.prototype.MUTE_STATUS = null;
+//instance.prototype.LAST_LINE_RECEIVED = null;
 
 instance.prototype.TIMER_FADER = null;
+
+//instance.prototype.VAR_POLL_INTERVAL = null;
 
 instance.prototype.updateConfig = function(config) {
 	let self = this;
 
 	self.config = config;
-	self.initVariables();
-	self.initFeedbacks();
+
+	// Variables and feedbacks coming to a future realease
+
+	//self.initVariables();
+	//self.initFeedbacks();
 	self.initPresets();
 	self.init_tcp();
 };
@@ -49,25 +44,79 @@ instance.prototype.init = function() {
 	debug = self.debug;
 	log = self.log;
 
-	self.initVariables();
-	self.initFeedbacks();
+	// Variables and feedbacks coming to a future release.
+
+	//self.initVariables();
+	//self.initFeedbacks();
 	self.initPresets();
 	self.init_tcp();
 };
 
+/*instance.prototype.initVariables = function() {
+	
+	let self = this;
+
+	let variables = [
+		{
+			label: 'Variable 1',
+			name: 'variable1'
+		},
+		{
+			label: 'Variable 2',
+			name: 'variable2'
+		},
+		{
+			label: 'Variable 3',
+			name: 'variable3'
+		},
+		{
+			label: 'Variable 4',
+			name: 'variable4'
+		},
+		{
+			label: 'Variable 5',
+			name: 'variable5'
+		},
+		{
+			label: 'Variable 6',
+			name: 'variable6'
+		},
+		{
+			label: 'Variable 7',
+			name: 'variable7'
+		},
+		{
+			label: 'Variable 8',
+			name: 'variable8'
+		},
+		{
+			label: 'Variable 9',
+			name: 'variable9'
+		},
+		{
+			label: 'Variable 10',
+			name: 'variable10'
+		}
+	];
+
+	self.setVariableDefinitions(variables);
+	self.initVariablePolling();
+
+}; */
+
 instance.prototype.init_tcp = function() {
 	let self = this;
+	let cmd;
+	let receivebuffer;
 
 	if (self.socket !== undefined) {
 		self.socket.destroy();
 		delete self.socket;
 	}
 
-	if (self.config.port === undefined) {
-		self.config.port = 61412;
-	}
+	self.config.port = 23;
 
-	if (self.config.host) {
+	if (self.config.host && self.config.port) {
 		self.socket = new tcp(self.config.host, self.config.port);
 
 		self.socket.on('status_change', function (status, message) {
@@ -81,37 +130,35 @@ instance.prototype.init_tcp = function() {
 
 		self.socket.on('connect', function () {
 			debug('Connected');
-			let cmd = 'all=?\r\n';
-			self.socket.send(cmd);
 		});
 
 		// if we get any data, display it to stdout
-		self.socket.on('data', function(buffer) {
-			let indata = buffer.toString('utf8');
-			self.processFeedback(indata);
+
+		this.socket.on('data', (chunk) => {
+			/*var i = 0, line = '', offset = 0;
+			receivebuffer += chunk;
+
+			while ( (i = receivebuffer.indexOf('\n', offset)) !== -1) {
+				line = receivebuffer.substr(offset, i - offset);
+				offset = i + 1;
+				this.socket.emit('receiveline', line.toString());
+			}
+
+			receivebuffer = receivebuffer.substr(offset);
+			*/
 		});
+
+		/*this.socket.on('receiveline', (line) => {
+
+			self.processFeedback(line);
+
+		});
+		*/
+
 	}
-};
-
-instance.prototype.initVariables = function () {
-	let self = this;
-
-	let variables = [
-		{
-			label: 'Fader Level',
-			name: 'fader_level'
-		},
-		{
-			label: 'Mute Status',
-			name: 'mute_status'
-		},
-		{
-			label: 'Current Format Button',
-			name: 'format_button'
-		}
-	];
-
-	self.setVariableDefinitions(variables);
+	else {
+		self.log('error', 'Please specify host in config.');
+	}
 };
 
 instance.prototype.initPresets = function () {
@@ -120,7 +167,7 @@ instance.prototype.initPresets = function () {
 
 	presets.push({
 		category: 'Fader Level',
-		label: 'Fader +',
+		label: 'Inc Fader',
 		bank: {
 			style: 'text',
 			text: 'Fader +',
@@ -129,21 +176,25 @@ instance.prototype.initPresets = function () {
 			bgcolor: self.rgb(0, 0, 0)
 		},
 		actions: [{
-			action: 'fader_increase_timer',
+			action: 'incFaderLevelTimer',
 			options: {
-				rate: '500'
+				rate: '200',
+				command: 'INC',
+				deviceID: 1,
+				instanceID: 1,
+				ammount: 1
 			}
 		}],
 		release_actions: [
 			{
-				action: 'fader_increase_stop'
+				action: 'incFaderLevelStop'
 			}
 		]
 	});
 
 	presets.push({
 		category: 'Fader Level',
-		label: 'Fader -',
+		label: 'Dec Fader',
 		bank: {
 			style: 'text',
 			text: 'Fader -',
@@ -152,14 +203,18 @@ instance.prototype.initPresets = function () {
 			bgcolor: self.rgb(0, 0, 0)
 		},
 		actions: [{
-			action: 'fader_decrease_timer',
+			action: 'incFaderLevelTimer',
 			options: {
-				rate: '500'
+				rate: '200',
+				command: 'DEC',
+				deviceID: 1,
+				instanceID: 1,
+				ammount: 1
 			}
 		}],
 		release_actions: [
 			{
-				action: 'fader_decrease_stop'
+				action: 'incFaderLevelStop'
 			}
 		]
 	});
@@ -175,9 +230,24 @@ instance.prototype.config_fields = function () {
 		{
 			type: 'text',
 			id: 'info',
+			label: '',
+			width: 12,
+			value: `
+				<div class="alert alert-danger">
+					<h4>ACTION REQUESTS</h4>
+					<div>
+						<strong>If you want to use an action that requires the use of a custom command, please submit a issue request to the module repo with the action that you would like added to the module.</strong>
+						<a href="https://github.com/bitfocus/companion-module-biamp-audia/issues" target="_new" class="btn btn-success">Module Issues Page</a>
+					</div>
+				</div>
+			`
+		},
+		{
+			type: 'text',
+			id: 'info',
 			width: 12,
 			label: 'Information',
-			value: 'This module will connect to a Dolby Digital Cinema Processor.'
+			value: 'This module will connect to a BiAmp Audia of Nexia Processor.'
 		},
 		{
 			type: 'textinput',
@@ -186,7 +256,107 @@ instance.prototype.config_fields = function () {
 			width: 6,
 			default: '192.168.0.1',
 			regex: self.REGEX_IP
-		}
+		},
+		/*{
+			type: 'textinput',
+			id: 'rate',
+			label: 'Poll Rate',
+			width: 6,
+			default: '500',
+		},
+		{
+			type: 'text',
+			id: 'info',
+			label: 'Information',
+			width: 12,
+			value: `
+				<div class="alert alert-danger">
+					<h3>IMPORTANT MESSAGE</h3>
+					<div>
+						<strong>Please read and understand the following before using variables</strong>
+						<br>
+						In order to use variables, you must generate the poll command using BiAmp's command generation tool.
+						<ul>
+							<li>When you generate the command, make sure you use the get action.</li>
+							<li>If you do not use the get action, then variables will not work.</li>
+							<li>Click the button below to access the command calculator.</li>
+							<li> Once you generate the command, enter the command and variable name below.</li>
+						</ul>
+						<a href="https://support.biamp.com/Audia-Nexia/Control/Audia-Nexia_command_string_calculator" target="_new" class="btn btn-warning mr-1">Audia/Nexia Command Calculator</a>
+					</div>
+				</div>
+			`
+		},
+		{
+			type: 'textinput',
+			id: 'var1Command',
+			label: 'Variable 1 Command',
+			width: 6,
+			default: '',
+		},
+		{
+			type: 'textinput',
+			id: 'var2Command',
+			label: 'Variable 2 Command',
+			width: 6,
+			default: '',
+		},
+		{
+			type: 'textinput',
+			id: 'var3Command',
+			label: 'Variable 3 Command',
+			width: 6,
+			default: '',
+		},
+		{
+			type: 'textinput',
+			id: 'var4Command',
+			label: 'Variable 4 Command',
+			width: 6,
+			default: '',
+		},
+		{
+			type: 'textinput',
+			id: 'var5Command',
+			label: 'Variable 5 Command',
+			width: 6,
+			default: '',
+		},
+		{
+			type: 'textinput',
+			id: 'var6Command',
+			label: 'Variable 6 Command',
+			width: 6,
+			default: '',
+		},
+		{
+			type: 'textinput',
+			id: 'var7Command',
+			label: 'Variable 7 Command',
+			width: 6,
+			default: '',
+		},
+		{
+			type: 'textinput',
+			id: 'var8Command',
+			label: 'Variable 8 Command',
+			width: 6,
+			default: '',
+		},
+		{
+			type: 'textinput',
+			id: 'var9Command',
+			label: 'Variable 9 Command',
+			width: 6,
+			default: '',
+		},
+		{
+			type: 'textinput',
+			id: 'var10Command',
+			label: 'Variable 10 Command',
+			width: 6,
+			default: '',
+		}, */
 	]
 };
 
@@ -201,6 +371,7 @@ instance.prototype.destroy = function() {
 	//destroy timers
 	if (self.TIMER_FADER !== null) {
 		clearInterval(this.TIMER_FADER);
+		self.TIMER_FADER = null;
 	}
 
 	debug('destroy', self.id);
@@ -210,11 +381,92 @@ instance.prototype.actions = function() {
 	let self = this;
 
 	self.system.emit('instance_actions', self.id, {
-
-		'fader_increase_once': {
-			label: 'Increase Fader Level 1 Point and Stop',
+		'setFaderLevel': {
+			label: 'Set Fader Level',
+			options: [
+				{
+					type: 'textinput',
+					id: 'deviceID',
+					label: 'Device ID',
+					tooltip: 'Insert device ID',
+					default: '1',
+					width: 6
+				},
+				{
+					type: 'textinput',
+					id: 'instanceID',
+					label: 'Instance ID',
+					tooltip: 'Insert instance ID',
+					default: '1',
+					width: 6
+				},
+				{
+					type: 'textinput',
+					id: 'channel',
+					label: 'Channel',
+					tooltip: 'Insert instance ID',
+					default: '1',
+					width: 6
+				},
+				{
+					type: 'number',
+					label: 'Level',
+					id: 'level',
+					min: -100,
+					max: 12,
+					default: 0,
+					required: true,
+					range: true
+		   		}
+			]
 		},
-		'fader_increase_timer': {
+		'incFaderLevel': {
+			label: 'Incriment/Decriment Fader Level',
+			options: [
+				{
+					type: 'dropdown',
+					label: 'Command',
+					id: 'command',
+					choices: [
+						{ id: 'INC', label: 'Incriment' },
+						{ id: 'DEC', label: 'Decriment' }
+					],
+					default: 'INC'
+				},
+				{
+					type: 'textinput',
+					id: 'deviceID',
+					label: 'Device ID',
+					tooltip: 'Insert device ID',
+					default: '1',
+					width: 6
+				},
+				{
+					type: 'textinput',
+					id: 'instanceID',
+					label: 'Instance ID',
+					tooltip: 'Insert instance ID',
+					default: '1',
+					width: 6
+				},
+				{
+					type: 'textinput',
+					id: 'channel',
+					label: 'Channel',
+					tooltip: 'Insert instance ID',
+					default: '1',
+					width: 6
+				},
+				{
+					type: 'textinput',
+					label: 'Incriment/Decriment Ammount',
+					id: 'ammount',
+					default: 1,
+					required: true
+		   		}
+			]
+		},
+		'incFaderLevelTimer': {
 			label: 'Increase Fader Level 1 Point Continuously',
 			options: [
 				{
@@ -223,68 +475,118 @@ instance.prototype.actions = function() {
 					id: 'rate',
 					default: '500',
 					tooltip: 'Time in milliseconds between increases'
-				}
+				},{
+					type: 'dropdown',
+					label: 'Command',
+					id: 'command',
+					choices: [
+						{ id: 'INC', label: 'Incriment' },
+						{ id: 'DEC', label: 'Decriment' }
+					],
+					default: 'INC'
+				},
+				{
+					type: 'textinput',
+					id: 'deviceID',
+					label: 'Device ID',
+					tooltip: 'Insert device ID',
+					default: '1',
+					width: 6
+				},
+				{
+					type: 'textinput',
+					id: 'instanceID',
+					label: 'Instance ID',
+					tooltip: 'Insert instance ID',
+					default: '1',
+					width: 6
+				},
+				{
+					type: 'textinput',
+					id: 'channel',
+					label: 'Channel',
+					tooltip: 'Insert instance ID',
+					default: '1',
+					width: 6
+				},
+				{
+					type: 'textinput',
+					label: 'Incriment/Decriment Ammount',
+					id: 'ammount',
+					default: 1,
+					required: true
+		   		}
 			]
 		},
-		'fader_increase_stop': {
+		'incFaderLevelStop': {
 			label: 'Stop Increasing Fader Level',
 		},
-		'fader_decrease_once': {
-			label: 'Decrease Fader Level 1 Point and Stop',
-		},
-		'fader_decrease_timer': {
-			label: 'Decrease Fader Level 1 Point Continuously',
+		'faderMute': {
+			label: 'Fader Mute',
 			options: [
 				{
-					type: 'number',
-					label: 'Rate',
-					id: 'rate',
-					default: '500',
-					tooltip: 'Time in milliseconds between decreases'
-				}
-			]
-		},
-		'fader_decrease_stop': {
-			label: 'Stop Decreasing Fader Level',
-		},
-		'fader_setlevel': {
-			label: 'Set Fader to Level',
-			options: [
+					type: 'textinput',
+					id: 'deviceID',
+					label: 'Device ID',
+					tooltip: 'Insert device ID',
+					default: '1',
+					width: 6
+				},
 				{
-					type: 'number',
-					label: 'Level',
-					id: 'level',
-					tooltip: 'Sets the level to a specific value (0-100)',
-					min: 0,
-					max: 100,
-					default: 85,
-					required: true,
-					range: true
-				}
-			]
-		},
-		'set_format_button': {
-			label: 'Set Format Button',
-			options: [
+					type: 'textinput',
+					id: 'instanceID',
+					label: 'Instance ID',
+					tooltip: 'Insert instance ID',
+					default: '1',
+					width: 6
+				},
+				{
+					type: 'textinput',
+					id: 'channel',
+					label: 'Channel',
+					tooltip: 'Insert instance ID',
+					default: '1',
+					width: 6
+				},
 				{
 					type: 'dropdown',
-					lael: 'Format',
-					id: 'format',
-					default: '0',
-					choices: self.CHOICES_FORMATS
-				}
+					label: 'Status',
+					id: 'muteStatus',
+					choices: [
+						{ id: '1', label: 'Mute' },
+						{ id: '0', label: 'Unmute' }
+					],
+					default: '1'
+				},
 			]
 		},
-		'mute_on': {
-			label: 'Mute On',
-		},
-		'mute_off': {
-			label: 'Mute Off',
-		},
-		'mute_toggle': {
-			label: 'Mute Toggle',
+		'customCommand': {
+			label: 'Custom Command',
+			options: [
+				{
+					type: 'text',
+					id: 'info',
+					width: 12,
+					label: 'BiAmp has created a command calculator to create custom command strings for the Audia and Nexia controlers. Unless you know what you are doing, it is strongly recommended that you use the calculator to create your command.',
+					value: ''
+				},
+				{
+					type: 'text',
+					id: 'info',
+					width: 12,
+					label: 'The calculator can be found here: https://support.biamp.com/Audia-Nexia/Control/Audia-Nexia_command_string_calculator',
+					value: ''
+				},
+				{
+					type: 'textinput',
+					id: 'command',
+					label: 'Command',
+					tooltip: 'Insert device ID',
+					default: '1',
+					width: 6
+				},
+			]
 		}
-
 	});
 };
 
@@ -293,40 +595,26 @@ instance.prototype.action = function(action) {
 	let self = this;
 	let cmd;
 	let options = action.options;
+	let muteInt;
+
+	console.log('here');
 	
 	switch(action.action) {
-		case 'fader_increase_once':
-			self.Fader_Change('increase');
+		case 'setFaderLevel':
+			cmd = 'SET' + ' ' + options.deviceID + ' '  + 'FDRLVL' + ' '  + options.instanceID + ' '  + options.channel + ' '  + options.level;
+			console.log(cmd);
 			break;
-		case 'fader_increase_timer':
-			self.Fader_Timer('increase', 'start', options.rate);
+		case 'faderMute':
+			cmd = 'SET' + ' ' + options.deviceID + ' '  + 'FDRMUTE' + ' '  + options.instanceID + ' '  + options.channel + ' '  + options.muteStatus;
+			console.log(cmd);
 			break;
-		case 'fader_increase_stop':
+		case 'incFaderLevelTimer':
+			self.Fader_Timer('start', options.rate, options.command, options.deviceID, options.instanceID, options.channel, options.ammount);
+			break;
+		case 'incFaderLevelStop':
 			self.Fader_Timer('increase', 'stop', null);
-			break;
-		case 'fader_decrease_once':
-			self.Fader_Change('decrease');
-			break;
-		case 'fader_decrease_timer':
-			self.Fader_Timer('decrease', 'start', options.rate);
-			break;
-		case 'fader_decrease_stop':
-			self.Fader_Timer('decrease', 'stop', null);
-			break;
-		case 'fader_setlevel':
-			cmd = 'fader_level=' + options.level;
-			break;
-		case 'set_format_button':
-			cmd = 'format_button=' + options.format;
-			break;
-		case 'mute_on':
-			cmd = 'mute=1';
-			break;
-		case 'mute_off':
-			cmd = 'mute=0';
-			break;
-		case 'mute_toggle':
-			cmd = 'mute=2';
+		case 'customCommand':
+			cmd = options.command;
 			break;
 	}
 
@@ -337,71 +625,176 @@ instance.prototype.action = function(action) {
 			debug('Socket not connected :(');
 		}
 	}
+	else {
+		self.log('error', 'Invalid command: ' + cmd);
+	}
 };
 
-instance.prototype.Fader_Change = function(direction) {
+instance.prototype.Fader_Change = function(command, deviceID, instanceID, channel, ammount) {
 	let self = this;
 
-	let newLevel = self.FADER_LEVEL;
+	cmd = command + ' ' + deviceID + ' '  + 'FDRLVL' + ' '  + instanceID + ' '  + channel + ' '  + ammount;
 
-	if (direction === 'increase') {
-		newLevel++;
-	}
-	else {
-		newLevel--;
-	}
-
-	if ((newLevel > 100) || (newLevel < 0)) {
-		self.Fader_Timer(direction, 'stop', null);
-	}
-	else {
-		let cmd = 'fader_level=' + newLevel;
-
+	if (cmd !== undefined) {
 		if (self.socket !== undefined && self.socket.connected) {
 			self.socket.send(cmd + '\r\n');
 		} else {
 			debug('Socket not connected :(');
 		}
 	}
+	else {
+		self.log('error', 'Invalid command: ' + cmd);
+	}
+
 };
 
-instance.prototype.Fader_Timer = function(direction, mode, rate) {
+//Implimenting variables in a future release.
+
+/*
+instance.prototype.initVariablePolling = function() {
+	let self = this;
+
+	if (self.VAR_POLL_INTERVAL != null) {
+		clearInterval(self.VAR_POLL_INTERVAL);
+		self.VAR_POLL_INTERVAL = null;
+	}
+
+	rate = self.config.rate;
+
+	self.VAR_POLL_INTERVAL = setInterval(self.PollVariable.bind(self), rate)
+
+
+}*/
+
+// Implimenting vairables in a future release.
+
+/*instance.prototype.PollVariable = function() {
+
+	let self = this;
+
+	let cmd = null;
+
+	console.log('start data send');
+
+	//cmd = self.config['var' + i + 'Command']
+
+	cmd = self.config.var1Command
+
+	console.log('Get command: ' + cmd);
+	
+	if (cmd !== undefined || '') {
+		if (self.socket !== undefined && self.socket.connected) {
+			self.socket.send(cmd + '\n');
+		} else {
+			debug('Socket not connected :(');
+		}
+	}
+	else {
+		self.log('error', 'Invalid command: ' + cmd);
+	}
+
+	console.log('End Data Send');
+
+	/*var i = 1;                  //  set your counter to 1
+
+	function myLoop() {         //  create a loop function
+	  setTimeout(function() {   //  call a 3s setTimeout when the loop is called
+
+
+		i++;                    //  increment the counter
+		if (i <= 10) {           //  if the counter < 10, call the loop function
+		  myLoop();             //  ..  again which will trigger another 
+		}                       //  ..  setTimeout()
+	  }, 3000)
+	}
+	
+	myLoop();    
+
+} */
+
+instance.prototype.Fader_Timer = function(mode, rate, command, deviceID, instanceID, channel, ammount) {
 	let self = this;
 
 	if (self.TIMER_FADER !== null) {
 		clearInterval(self.TIMER_FADER);
+		self.TIMER_FADER = null;
 	}
 
 	if (mode === 'start') {
-		self.TIMER_FADER = setInterval(self.Fader_Change.bind(self), parseInt(rate), direction);
+		self.TIMER_FADER = setInterval(self.Fader_Change.bind(self), parseInt(rate), command, deviceID, instanceID, channel, ammount);
 	}
 };
 
-instance.prototype.processFeedback = function(data) {
-	let self = this;
-	let cmdValue = data.trim().split('=');
+//Feedbacks will be implimented in a future release.
 
-	switch(cmdValue[0]) {
-		case 'fader_level':
-			self.FADER_LEVEL = parseInt(cmdValue[1]);
-			self.setVariable('fader_level', self.FADER_LEVEL);
-			break;
-		case 'mute':
-			if (cmdValue[1] === '0') {
-				self.setVariable('mute_status', 'Unmuted');
-				self.MUTE_STATUS = false;
+/*instance.prototype.processFeedback = function(data) {
+	let self = this;
+	let LLRc;
+
+	//data = data.replace('\n', '');
+
+	console.log('Last Line: ' + self.LAST_LINE_RECEIVED);
+	console.log('Current Line: ' + data);
+	console.log('\n');
+	
+
+	for (let i = 1; i <= 10; i++) {
+
+		LLRc = self.LAST_LINE_RECEIVED;
+
+		cmd = self.config['var' + i + 'Command']
+
+		console.log('Generated Loop Checked Command: ' + cmd)
+		//console.log('\n')
+
+		//self.setVariable('Variable' + i, data);
+
+		//data = data.replace('\n', '');
+		
+		if (LLRc != null) {
+			LLRc = LLRc.replace('\n', '');
+		} else {
+			return;
+		}
+
+		
+		
+		console.log('data: ' + data);
+		console.log('LLRc: ' + LLRc);
+
+		if (LLRc == null) {
+			console.log('LLRc is NULL setting to \'\'');
+			LLRc = '';
+		} else {
+			return;
+		}
+
+		console.log('index of cmd test: ' + LLRc.indexOf(cmd));
+
+		if(cmd !=  '') {
+			console.log('Command Not Blank');
+			if (LLRc.indexOf(cmd) == 0) {
+				console.log("Last line and generated command match.");
+				if(data.indexOf('-ERR:SYNTAX') == -1) {
+					console.log('Set Variable: ' + 'variable' + i);
+					self.setVariable('variable' + i, data);
+				} else {
+					return;
+				}
+			} else {
+				return;
 			}
-			else {
-				self.setVariable('mute_status', 'Muted');
-				self.MUTE_STATUS = true;
-			}
-			self.checkFeedbacks('mute_status');
-			break;
-		case 'format_button':
-			let value = self.CHOICES_FORMATS.find( ({ id }) => id === cmdValue[1]).label;
-			self.setVariable('format_button', value);
-			break;
+		} else {
+			return;
+		}
 	}
+
+	console.log('Data Index Of Result: ' + data.indexOf('-ERR:SYNTAX'));
+
+	if (data.indexOf('-ERR:SYNTAX') == -1) {
+		self.LAST_LINE_RECEIVED = data;
+	}
+
 };
 
 instance.prototype.initFeedbacks = function () {
@@ -410,39 +803,10 @@ instance.prototype.initFeedbacks = function () {
 	// feedbacks
 	let feedbacks = {};
 
-	feedbacks['mute_status'] = {
-		label: 'Change Button Color If Muted',
-		description: 'If muted, set the button to this color.',
-		options: [
-			{
-				type: 'colorpicker',
-				label: 'Foreground color',
-				id: 'fg',
-				default: self.rgb(255,255,255)
-			},
-			{
-				type: 'colorpicker',
-				label: 'Background color',
-				id: 'bg',
-				default: self.rgb(0,255,0)
-			},
-		]
-	};
-
 	self.setFeedbackDefinitions(feedbacks);
 }
+*/
 
-instance.prototype.feedback = function(feedback, bank) {
-	let self = this;
-	
-	if (feedback.type === 'mute_status') {
-		if (self.MUTE_STATUS === true) {
-			return { color: feedback.options.fg, bgcolor: feedback.options.bg };
-		}
-	}
-
-	return {};
-}
 
 instance_skel.extendedBy(instance);
 exports = module.exports = instance;
