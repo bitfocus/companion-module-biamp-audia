@@ -7,9 +7,9 @@ This module will allow you to control the BiAmp Audia / Nexia family of devices.
 
 **Available actions:**
 * Set fader to a specific level
-* Incriment fader up
-* Incriment fader down
-* Stop inceient
+* Increment fader up continuously
+* Increment fader down continuously
+* Stop incrementing
 * Custom command
 
 If you want a specific action to be added, please open an issue request on the module repo.
