@@ -30,7 +30,7 @@ instance.prototype.updateConfig = function(config) {
 
 	self.config = config;
 
-	// Variables and feedbacks coming to a future realease
+	// Variables and feedbacks coming to a future release
 
 	//self.initVariables();
 	//self.initFeedbacks();
@@ -182,7 +182,7 @@ instance.prototype.initPresets = function () {
 				command: 'INC',
 				deviceID: 1,
 				instanceID: 1,
-				ammount: 1
+				amount: 1
 			}
 		}],
 		release_actions: [
@@ -209,7 +209,7 @@ instance.prototype.initPresets = function () {
 				command: 'DEC',
 				deviceID: 1,
 				instanceID: 1,
-				ammount: 1
+				amount: 1
 			}
 		}],
 		release_actions: [
@@ -421,15 +421,15 @@ instance.prototype.actions = function() {
 			]
 		},
 		'incFaderLevel': {
-			label: 'Incriment/Decriment Fader Level',
+			label: 'Increment/Decrement Fader Level',
 			options: [
 				{
 					type: 'dropdown',
 					label: 'Command',
 					id: 'command',
 					choices: [
-						{ id: 'INC', label: 'Incriment' },
-						{ id: 'DEC', label: 'Decriment' }
+						{ id: 'INC', label: 'Increment' },
+						{ id: 'DEC', label: 'Decrement' }
 					],
 					default: 'INC'
 				},
@@ -459,8 +459,8 @@ instance.prototype.actions = function() {
 				},
 				{
 					type: 'textinput',
-					label: 'Incriment/Decriment Ammount',
-					id: 'ammount',
+					label: 'Increment/Decrement Amount',
+					id: 'amount',
 					default: 1,
 					required: true
 		   		}
@@ -480,8 +480,8 @@ instance.prototype.actions = function() {
 					label: 'Command',
 					id: 'command',
 					choices: [
-						{ id: 'INC', label: 'Incriment' },
-						{ id: 'DEC', label: 'Decriment' }
+						{ id: 'INC', label: 'Increment' },
+						{ id: 'DEC', label: 'Decrement' }
 					],
 					default: 'INC'
 				},
@@ -511,8 +511,8 @@ instance.prototype.actions = function() {
 				},
 				{
 					type: 'textinput',
-					label: 'Incriment/Decriment Ammount',
-					id: 'ammount',
+					label: 'Increment/Decrement Amount',
+					id: 'amount',
 					default: 1,
 					required: true
 		   		}
@@ -567,7 +567,7 @@ instance.prototype.actions = function() {
 					type: 'text',
 					id: 'info',
 					width: 12,
-					label: 'BiAmp has created a command calculator to create custom command strings for the Audia and Nexia controlers. Unless you know what you are doing, it is strongly recommended that you use the calculator to create your command.',
+					label: 'BiAmp has created a command calculator to create custom command strings for the Audia and Nexia controllers. Unless you know what you are doing, it is strongly recommended that you use the calculator to create your command.',
 					value: ''
 				},
 				{
@@ -609,7 +609,7 @@ instance.prototype.action = function(action) {
 			console.log(cmd);
 			break;
 		case 'incFaderLevelTimer':
-			self.Fader_Timer('start', options.rate, options.command, options.deviceID, options.instanceID, options.channel, options.ammount);
+			self.Fader_Timer('start', options.rate, options.command, options.deviceID, options.instanceID, options.channel, options.amount);
 			break;
 		case 'incFaderLevelStop':
 			self.Fader_Timer('increase', 'stop', null);
@@ -630,10 +630,10 @@ instance.prototype.action = function(action) {
 	}
 };
 
-instance.prototype.Fader_Change = function(command, deviceID, instanceID, channel, ammount) {
+instance.prototype.Fader_Change = function(command, deviceID, instanceID, channel, amount) {
 	let self = this;
 
-	cmd = command + ' ' + deviceID + ' '  + 'FDRLVL' + ' '  + instanceID + ' '  + channel + ' '  + ammount;
+	cmd = command + ' ' + deviceID + ' '  + 'FDRLVL' + ' '  + instanceID + ' '  + channel + ' '  + amount;
 
 	if (cmd !== undefined) {
 		if (self.socket !== undefined && self.socket.connected) {
@@ -648,7 +648,7 @@ instance.prototype.Fader_Change = function(command, deviceID, instanceID, channe
 
 };
 
-//Implimenting variables in a future release.
+//Implementing variables in a future release.
 
 /*
 instance.prototype.initVariablePolling = function() {
@@ -666,7 +666,7 @@ instance.prototype.initVariablePolling = function() {
 
 }*/
 
-// Implimenting vairables in a future release.
+// Implementing variables in a future release.
 
 /*instance.prototype.PollVariable = function() {
 
@@ -712,7 +712,7 @@ instance.prototype.initVariablePolling = function() {
 
 } */
 
-instance.prototype.Fader_Timer = function(mode, rate, command, deviceID, instanceID, channel, ammount) {
+instance.prototype.Fader_Timer = function(mode, rate, command, deviceID, instanceID, channel, amount) {
 	let self = this;
 
 	if (self.TIMER_FADER !== null) {
@@ -721,11 +721,11 @@ instance.prototype.Fader_Timer = function(mode, rate, command, deviceID, instanc
 	}
 
 	if (mode === 'start') {
-		self.TIMER_FADER = setInterval(self.Fader_Change.bind(self), parseInt(rate), command, deviceID, instanceID, channel, ammount);
+		self.TIMER_FADER = setInterval(self.Fader_Change.bind(self), parseInt(rate), command, deviceID, instanceID, channel, amount);
 	}
 };
 
-//Feedbacks will be implimented in a future release.
+//Feedbacks will be implemented in a future release.
 
 /*instance.prototype.processFeedback = function(data) {
 	let self = this;
