@@ -1,8 +1,12 @@
 {
 	"name": "biamp-audia",
-	"version": "1.0.1",
+	"version": "1.0.2",
 	"api_version": "1.0.0",
-	"keywords": [ "biamp", "audia", "nexia" ],
+	"keywords": [
+		"biamp",
+		"audia",
+		"nexia"
+	],
 	"manufacturer": "Biamp",
 	"product": "Audia/Nexia",
 	"shortname": "audianexia",
@@ -16,7 +20,9 @@
 		"url": "git+https://github.com/bitfocus/companion-module-biamp-audia.git"
 	},
 	"author": "David Stevens <teamjtf4@gmail.com>",
-	"contributors": ["Joseph Adams <josephdadams@gmail.com>"],
+	"contributors": [
+		"Joseph Adams <josephdadams@gmail.com>"
+	],
 	"license": "MIT",
 	"bugs": {
 		"url": "https://github.com/bitfocus/companion-module-biamp-audia/issues"
