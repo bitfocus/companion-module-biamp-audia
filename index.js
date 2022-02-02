@@ -190,7 +190,7 @@ instance.prototype.destroy = function () {
 instance.prototype.actions = function () {
 	let self = this
 
-	self.system.emit('instance_actions', self.id, {
+	self.setActions({
 		setFaderLevel: {
 			label: 'Set Fader Level',
 			options: [
