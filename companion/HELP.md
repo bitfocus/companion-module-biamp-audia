@@ -1,6 +1,6 @@
-## BiAmp Audia / Nexia
+## Biamp Audia / Nexia
 
-This module will allow you to control the BiAmp Audia / Nexia family of devices.
+This module will allow you to control the Biamp Audia / Nexia family of devices.
 
 ### Configuration
 * Enter the IP address of the device in the configuration settings.

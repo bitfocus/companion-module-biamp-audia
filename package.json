@@ -1,31 +1,21 @@
 {
 	"name": "biamp-audia",
 	"version": "1.0.2",
-	"api_version": "1.0.0",
-	"keywords": [
-		"biamp",
-		"audia",
-		"nexia"
-	],
-	"manufacturer": "Biamp",
-	"product": "Audia/Nexia",
-	"shortname": "audianexia",
-	"description": "",
-	"main": "index.js",
+	"main": "./src/index.js",
+	"type": "module",
 	"scripts": {
-		"test": "echo \"Error: no test specified\" && exit 1"
+		"format": "prettier -w ."
 	},
+	"license": "MIT",
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/bitfocus/companion-module-biamp-audia.git"
+		"url": "git+https://github.com/bitfocus/companion-module-biamp-audia"
 	},
-	"author": "David Stevens <teamjtf4@gmail.com>",
-	"contributors": [
-		"Joseph Adams <josephdadams@gmail.com>"
-	],
-	"license": "MIT",
-	"bugs": {
-		"url": "https://github.com/bitfocus/companion-module-biamp-audia/issues"
+	"dependencies": {
+		"@companion-module/base": "~1.0.1"
 	},
-	"homepage": "https://github.com/bitfocus/companion-module-biamp-audia#readme"
+	"devDependencies": {
+		"@companion-module/tools": "^0.5.1"
+	},
+	"prettier": "@companion-module/tools/.prettierrc.json"
 }
