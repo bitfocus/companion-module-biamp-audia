@@ -214,26 +214,10 @@ export function getActions() {
 			name: 'Custom Command',
 			options: [
 				{
-					type: 'text',
-					id: 'info',
-					width: 12,
-					label:
-						'BiAmp has created a command calculator to create custom command strings for the Audia and Nexia controllers. Unless you know what you are doing, it is strongly recommended that you use the calculator to create your command.',
-					value: '',
-				},
-				{
-					type: 'text',
-					id: 'info',
-					width: 12,
-					label:
-						'The calculator can be found here: https://support.biamp.com/Audia-Nexia/Control/Audia-Nexia_command_string_calculator',
-					value: '',
-				},
-				{
 					type: 'textinput',
 					id: 'command',
 					label: 'Command',
-					tooltip: 'Insert device ID',
+					tooltip: 'Insert Command String',
 					default: '',
 					width: 6,
 				},

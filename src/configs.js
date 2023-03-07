@@ -3,28 +3,6 @@ import { Regex } from '@companion-module/base';
 export function getConfigFields() {
 	let fields = [
 		{
-			type: 'text',
-			id: 'info',
-			label: '',
-			width: 12,
-			value: `
-				<div class="alert alert-danger">
-					<h4>ACTION REQUESTS</h4>
-					<div>
-						<strong>If you want to use an action that requires the use of a custom command, please submit a issue request to the module repo with the action that you would like added to the module.</strong>
-						<a href="https://github.com/bitfocus/companion-module-biamp-audia/issues" target="_new" class="btn btn-success">Module Issues Page</a>
-					</div>
-				</div>
-			`,
-		},
-		{
-			type: 'text',
-			id: 'info',
-			width: 12,
-			label: 'Information',
-			value: 'This module will connect to a Biamp Audia or Nexia Processor.',
-		},
-		{
 			type: 'textinput',
 			id: 'host',
 			label: 'IP Address',

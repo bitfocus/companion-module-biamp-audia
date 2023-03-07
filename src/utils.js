@@ -13,30 +13,19 @@ export function fetchData(variable) {
 export function processData(data) {
 
 	if (this.LAST_LINE_SENT !== undefined && this.LAST_LINE_RECEIVED !== undefined) {
-		//console.log('LLR', this.LAST_LINE_RECEIVED);
-		//console.log('LLS', this.LAST_LINE_SENT);
-	
-		//console.log('data', data);
-	
+
 		if (this.LAST_LINE_RECEIVED.includes(this.LAST_LINE_SENT) && data.length > 0 && !data.includes('\n')) {
-			console.log('here')
 			for (let i = 1; i <= this.config.variableCount; i++) {
 				let name = 'variable' + i;
 
-				console.log('i', i)
-				//console.log(name)
-				//console.log(this.config[name])
 				if(this.LAST_LINE_RECEIVED.includes(this.config[name])) {
-					console.log('HERE @')
 					this.DEVICE_INFO[`variable${i}`] = data.replace(' \r', '');
-					console.log(this.DEVICE_INFO)
+					this.updateVariables();
 					break;
-					//console.log(JSON.stringify(this.DEVICE_INFO))
 				}
 			}
 		}
 	
-		//this.updateVariables();
 	}
 
 	if(data.length > 1) {

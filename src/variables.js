@@ -1,5 +1,5 @@
 export function getVariables() {
-	const variables = [];
+	var variables = [];
 
 	variables.push({ variableId: 'connection', name: 'Connection' });
 
@@ -13,13 +13,15 @@ export function getVariables() {
 export function updateVariables() {
 	try {
 		let variableObj = {
-			connection: this.DEVICEINFO.connection,
+			connection: this.CONNECTED,
 		};
 
-		for (let i = 1; i <= this.OUTPUTS; i++) {
-			variableObj[`variable${i}`] = this.DEVICEINFO[i];
+		for (let i = 1; i <= this.config.variableCount; i++) {
+			variableObj[`variable${i}`] = this.DEVICE_INFO[`variable${i}`];
 		}
 
 		this.setVariableValues(variableObj);
-	} catch (error) {}
+	} catch (error) {
+		console.log(error)
+	}
 }
