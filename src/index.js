@@ -110,7 +110,7 @@ class BiampAudiaInstance extends InstanceBase {
 				for (let i = 0, len = str.length; i < len; i++) {
 					let chr = str[i];
 					line += chr;
-			
+
 					if (/[\r\n]$/.test(chr)) {
 						this.processData(line);
 						line = '';
@@ -149,17 +149,17 @@ class BiampAudiaInstance extends InstanceBase {
 	}
 
 	getInformation() {
-		if(this.GETTING_INFO == false) {
+		if (this.GETTING_INFO == false) {
 			this.GETTING_INFO = true;
 
 			let i = 1;
 			let self = this;
-	
+
 			while (i <= self.MAX_VARIABLES) {
 				loop(i);
 				i++;
 			}
-	
+
 			function loop(i) {
 				setTimeout(function () {
 					self.fetchData(i);

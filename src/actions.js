@@ -39,11 +39,10 @@ export function getActions() {
 				},
 			],
 			callback: (action) => {
-
 				let opt = action.options;
 
 				this.setFaderLevel(opt.deviceID, opt.instanceID, opt.channel, opt.level);
-			}
+			},
 		},
 
 		incFaderLevel: {
@@ -95,7 +94,7 @@ export function getActions() {
 				let opt = action.options;
 
 				this.faderChange(opt.command, opt.deviceID, opt.instanceID, opt.channel, opt.amount);
-			}
+			},
 		},
 
 		incFaderLevelTimer: {
@@ -153,16 +152,24 @@ export function getActions() {
 			callback: (action) => {
 				let opt = action.options;
 
-				this.incrementFaderLevelTimer('start', opt.rate, opt.command, opt.deviceID, opt.instanceID, opt.channel, opt.amount)
-			}
+				this.incrementFaderLevelTimer(
+					'start',
+					opt.rate,
+					opt.command,
+					opt.deviceID,
+					opt.instanceID,
+					opt.channel,
+					opt.amount
+				);
+			},
 		},
 
 		incFaderLevelStop: {
 			name: 'Stop Increasing Fader Level',
 			options: [],
 			callback: (action) => {
-				this.incrementFaderLevelTimer('stop')
-			}
+				this.incrementFaderLevelTimer('stop');
+			},
 		},
 
 		faderMute: {
@@ -207,7 +214,7 @@ export function getActions() {
 				let opt = action.options;
 
 				this.setFaderMute(opt.deviceID, opt.instanceID, opt.channel, opt.muteStatus);
-			}
+			},
 		},
 
 		customCommand: {
@@ -223,12 +230,12 @@ export function getActions() {
 				},
 			],
 			callback: (action) => {
-				let opt = action.options
+				let opt = action.options;
 
-				cmd = options.command
+				cmd = options.command;
 
 				this.sendCommand(cmd);
-			}
+			},
 		},
 	};
 	return actions;

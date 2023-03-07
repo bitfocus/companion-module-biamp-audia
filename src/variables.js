@@ -22,6 +22,6 @@ export function updateVariables() {
 
 		this.setVariableValues(variableObj);
 	} catch (error) {
-		console.log(error)
+		console.log(error);
 	}
 }

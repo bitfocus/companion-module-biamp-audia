@@ -32,17 +32,17 @@ export function getPresets() {
 							channel: 1,
 							amount: 1,
 						},
-					}
+					},
 				],
 				up: [
 					{
-						actionId: 'incFaderLevelStop'
-					}
-				]
+						actionId: 'incFaderLevelStop',
+					},
+				],
 			},
 		],
-		feedbacks: []
-	}
+		feedbacks: [],
+	};
 
 	presets['decFader'] = {
 		type: 'button',
@@ -68,17 +68,17 @@ export function getPresets() {
 							channel: 1,
 							amount: 1,
 						},
-					}
+					},
 				],
 				up: [
 					{
-						actionId: 'incFaderLevelStop'
-					}
-				]
+						actionId: 'incFaderLevelStop',
+					},
+				],
 			},
 		],
-		feedbacks: []
-	}
+		feedbacks: [],
+	};
 
 	return presets;
 }
