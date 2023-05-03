@@ -232,7 +232,7 @@ export function getActions() {
 			callback: (action) => {
 				let opt = action.options;
 
-				cmd = options.command;
+				let cmd = opt.command;
 
 				this.sendCommand(cmd);
 			},
