@@ -3,7 +3,7 @@
 	"name": "biamp-audia",
 	"shortname": "biamp-audia",
 	"description": "Biamp Audia/Nexia",
-	"version": "2.0.0",
+	"version": "2.0.1",
 	"license": "MIT",
 	"repository": "git+https://github.com/bitfocus/companion-module-biamp-audia.git",
 	"bugs": "https://github.com/bitfocus/companion-module-biamp-audia/issues",
