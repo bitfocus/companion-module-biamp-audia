@@ -15,9 +15,17 @@ export function processData(data) {
 				let name = 'variable' + i;
 
 				if (this.LAST_LINE_RECEIVED.includes(this.config[name])) {
-					this.DEVICE_INFO[`variable${i}`] = data.replace(' \r', '');
-					this.updateVariables();
-					break;
+					if(this.LAST_LINE_RECEIVED.includes('FDRLVL')) {
+						let num = Number(data);
+						num = num.toFixed(2);
+						this.DEVICE_INFO[`variable${i}`] = num;
+						break;
+					} else {
+						this.DEVICE_INFO[`variable${i}`] = data.replace(' \r', '');
+						this.updateVariables();
+						break;
+					}
+					
 				}
 			}
 		}
