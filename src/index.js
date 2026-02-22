@@ -29,7 +29,7 @@ class BiampAudiaInstance extends InstanceBase {
 		this.config = config;
 		this.updateStatus('connecting');
 
-		this.POLLING_INTERVAL = null; //used to poll the device every second
+		this.POLLING_INTERVAL = 500; //used to poll the device every second
 		this.CONNECTED = false; //used for friendly notifying of the user that we have not received data yet
 		this.MAX_VARIABLES = 20;
 		this.GETTING_INFO = false;
