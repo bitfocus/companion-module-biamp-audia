@@ -12,7 +12,7 @@
 		"url": "git+https://github.com/bitfocus/companion-module-biamp-audia"
 	},
 	"dependencies": {
-		"@companion-module/base": "~1.0.1"
+		"@companion-module/base": "~1.4.3"
 	},
 	"devDependencies": {
 		"@companion-module/tools": "^2.8.0"
