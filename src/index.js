@@ -33,6 +33,14 @@ class BiampAudiaInstance extends InstanceBase {
 		this.CONNECTED = false; //used for friendly notifying of the user that we have not received data yet
 		this.MAX_VARIABLES = 20;
 		this.GETTING_INFO = false;
+		this.COMMAND_QUEUE = [];
+		this.COMMAND_IN_FLIGHT = undefined;
+		this.COMMAND_QUEUE_PAUSED = false;
+		this.COMMAND_RESPONSE_TIMEOUT = null;
+		this.COMMAND_ERROR_SETTLE_TIMEOUT = null;
+		this.COMMAND_RESPONSE_TIMEOUT_MS = 5000;
+		this.COMMAND_ERROR_SETTLE_MS = 25;
+		this.MAX_COMMAND_QUEUE = 100;
 
 		this.LAST_LINE_SEND;
 		this.LAST_LINE_RECEIVED;
@@ -49,6 +57,7 @@ class BiampAudiaInstance extends InstanceBase {
 	}
 
 	async destroy() {
+		this.pauseCommandQueue('destroyed');
 		if (this.socket !== undefined) {
 			this.socket.destroy();
 			delete this.socket;
@@ -61,6 +70,11 @@ class BiampAudiaInstance extends InstanceBase {
 	}
 
 	async configUpdated(config) {
+		this.pauseCommandQueue('configuration updated');
+		this.COMMAND_QUEUE = [];
+		this.COMMAND_IN_FLIGHT = undefined;
+		this.COMMAND_QUEUE_PAUSED = false;
+		this.COMMAND_ERROR_SETTLE_TIMEOUT = null;
 		this.config = config;
 
 		this.updateStatus('connecting');
@@ -109,16 +123,19 @@ class BiampAudiaInstance extends InstanceBase {
 
 				for (let i = 0, len = str.length; i < len; i++) {
 					let chr = str[i];
-					line += chr;
-
-					if (/[\r\n]$/.test(chr)) {
-						this.processData(line);
-						line = '';
+					if (chr === '\r' || chr === '\n') {
+						if (line.length > 0) {
+							this.processData(line);
+							line = '';
+						}
+					} else {
+						line += chr;
 					}
 				}
 
 				this.CONNECTED = true;
 				this.setVariableValues({ connection: 'Connected' });
+				this.sendNextCommand();
 				if (!this.POLLING_INTERVAL && this.config.polling) {
 					this.setupInterval();
 				}
@@ -128,6 +145,12 @@ class BiampAudiaInstance extends InstanceBase {
 
 			this.socket.on('error', (err) => {
 				this.CONNECTED = false;
+				this.pauseCommandQueue('socket error');
+			});
+
+			this.socket.on('end', () => {
+				this.CONNECTED = false;
+				this.pauseCommandQueue('socket closed');
 			});
 		}
 	}

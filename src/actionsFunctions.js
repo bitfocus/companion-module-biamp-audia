@@ -2,7 +2,7 @@ export function setFaderLevel(deviceID, instanceID, channel, level) {
 	let cmd = 'SET' + ' ' + deviceID + ' ' + 'FDRLVL' + ' ' + instanceID + ' ' + channel + ' ' + level;
 	console.log(cmd);
 
-	sendCommand(cmd);
+	this.sendCommand(cmd);
 }
 
 export function setFaderMute(deviceID, instanceID, channel, state) {
@@ -26,7 +26,7 @@ export function incrementFaderLevelTimer(mode, rate, command, deviceID, instance
 			deviceID,
 			instanceID,
 			channel,
-			amount
+			amount,
 		);
 	}
 }
